@@ -4,10 +4,17 @@ import styles from "../styles/Home.module.css";
 import { useRef, useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import parse from "html-react-parser";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
 
 export default function Home() {
   const editorRef = useRef(null);
   const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   // useEffect(() => {
   //   setEditorLoaded(true);
@@ -22,45 +29,58 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <Editor
-          id="editor1"
-          apiKey="cbnsm4hq59nznudxtefmid6gj9l86qbj76yde4fufwry39sj"
-          init={{
-            height: 500,
-            menubar: true,
-            plugins: [
-              "advlist",
-              "autolink",
-              "lists",
-              "link",
-              "image",
-              "charmap",
-              "preview",
-              "anchor",
-              "searchreplace",
-              "visualblocks",
-              "code",
-              "fullscreen",
-              "insertdatetime",
-              "media",
-              "table",
-              "code",
-              "help",
-              "wordcount",
-            ],
-            toolbar:
-              "undo redo | blocks | " +
-              "bold italic forecolor | alignleft aligncenter " +
-              "alignright alignjustify | bullist numlist outdent indent table | " +
-              "removeformat | help",
-            content_style:
-              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-          }}
-          onEditorChange={(newValue, editor) => {
-            setValue(newValue);
-          }}
-          value={value}
-        />
+        <Button onClick={handleOpen}>Open modal</Button>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          disableAutoFocus
+          disableEnforceFocus
+        >
+          <DialogTitle>Test</DialogTitle>
+          <DialogContent>
+            <Editor
+              id="editor1"
+              apiKey="cbnsm4hq59nznudxtefmid6gj9l86qbj76yde4fufwry39sj"
+              init={{
+                height: 500,
+                menubar: true,
+                plugins: [
+                  "advlist",
+                  "autolink",
+                  "lists",
+                  "link",
+                  "image",
+                  "charmap",
+                  "preview",
+                  "anchor",
+                  "searchreplace",
+                  "visualblocks",
+                  "code",
+                  "fullscreen",
+                  "insertdatetime",
+                  "media",
+                  "table",
+                  "code",
+                  "help",
+                  "wordcount",
+                ],
+                toolbar:
+                  "undo redo | blocks | " +
+                  "bold italic forecolor | alignleft aligncenter " +
+                  "alignright alignjustify | bullist numlist outdent indent table | " +
+                  "removeformat | help",
+                content_style:
+                  "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+              }}
+              onEditorChange={(newValue, editor) => {
+                setValue(newValue);
+              }}
+              value={value}
+            />
+          </DialogContent>
+        </Dialog>
 
         <div style={{ width: "100%" }}>{parse(value)}</div>
       </main>
