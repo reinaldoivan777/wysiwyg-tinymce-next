@@ -3,14 +3,19 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useRef, useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import parse from "html-react-parser";
+import parse, {
+  HTMLReactParserOptions,
+  Element,
+  domToReact,
+} from "html-react-parser";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
+import { CopyBlock, tomorrow } from "react-code-blocks";
 
 export default function Home() {
-  const editorRef = useRef(null);
+  const editorRef: any = useRef(null);
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -19,6 +24,26 @@ export default function Home() {
   // useEffect(() => {
   //   setEditorLoaded(true);
   // }, []);
+
+  const replaceCodeBlock: HTMLReactParserOptions = {
+    replace: (domNode) => {
+      if (domNode instanceof Element && domNode.tagName === "code") {
+        // const parsedJson = JSON.parse(domNode.children.toString());
+        const language = domNode.parent.attribs.class.replace("language-", "");
+        console.log(language);
+        return (
+          <CopyBlock
+            // text={JSON.stringify(parsedJson, null, 4)}
+            text={domToReact(domNode.children)}
+            language={language}
+            theme={tomorrow}
+            showLineNumber
+            codeBlock
+          />
+        );
+      }
+    },
+  };
 
   return (
     <div className={styles.container}>
@@ -41,6 +66,7 @@ export default function Home() {
           <DialogTitle>Test</DialogTitle>
           <DialogContent>
             <Editor
+              onInit={(evt, editor) => (editorRef.current = editor)}
               id="editor1"
               apiKey="cbnsm4hq59nznudxtefmid6gj9l86qbj76yde4fufwry39sj"
               init={{
@@ -82,7 +108,164 @@ export default function Home() {
           </DialogContent>
         </Dialog>
 
-        <div style={{ width: "100%" }}>{parse(value)}</div>
+        <Editor
+          onInit={(evt, editor) => (editorRef.current = editor)}
+          id="editor2"
+          apiKey="cbnsm4hq59nznudxtefmid6gj9l86qbj76yde4fufwry39sj"
+          init={{
+            height: 500,
+            menubar: true,
+            plugins: [
+              "advlist",
+              "autolink",
+              "lists",
+              "link",
+              "image",
+              "charmap",
+              "preview",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "code",
+              "codesample",
+              "fullscreen",
+              "insertdatetime",
+              "media",
+              "table",
+              "code",
+              "help",
+              "wordcount",
+            ],
+            toolbar:
+              "undo redo | blocks | " +
+              "bold italic forecolor | alignleft aligncenter " +
+              "alignright alignjustify | bullist numlist outdent indent table | " +
+              "removeformat | codesample | help",
+            codesample_languages: [
+              { text: "HTML/XML", value: "markup" },
+              { text: "XML", value: "xml" },
+              { text: "HTML", value: "html" },
+              { text: "mathml", value: "mathml" },
+              { text: "SVG", value: "svg" },
+              { text: "CSS", value: "css" },
+              { text: "Clike", value: "clike" },
+              { text: "Javascript", value: "javascript" },
+              { text: "ActionScript", value: "actionscript" },
+              { text: "apacheconf", value: "apacheconf" },
+              { text: "apl", value: "apl" },
+              { text: "applescript", value: "applescript" },
+              { text: "asciidoc", value: "asciidoc" },
+              { text: "aspnet", value: "aspnet" },
+              { text: "autoit", value: "autoit" },
+              { text: "autohotkey", value: "autohotkey" },
+              { text: "bash", value: "bash" },
+              { text: "basic", value: "basic" },
+              { text: "batch", value: "batch" },
+              { text: "c", value: "c" },
+              { text: "brainfuck", value: "brainfuck" },
+              { text: "bro", value: "bro" },
+              { text: "bison", value: "bison" },
+              { text: "C#", value: "csharp" },
+              { text: "C++", value: "cpp" },
+              { text: "CoffeeScript", value: "coffeescript" },
+              { text: "ruby", value: "ruby" },
+              { text: "d", value: "d" },
+              { text: "dart", value: "dart" },
+              { text: "diff", value: "diff" },
+              { text: "docker", value: "docker" },
+              { text: "eiffel", value: "eiffel" },
+              { text: "elixir", value: "elixir" },
+              { text: "erlang", value: "erlang" },
+              { text: "fsharp", value: "fsharp" },
+              { text: "fortran", value: "fortran" },
+              { text: "git", value: "git" },
+              { text: "glsl", value: "glsl" },
+              { text: "go", value: "go" },
+              { text: "groovy", value: "groovy" },
+              { text: "haml", value: "haml" },
+              { text: "handlebars", value: "handlebars" },
+              { text: "haskell", value: "haskell" },
+              { text: "haxe", value: "haxe" },
+              { text: "http", value: "http" },
+              { text: "icon", value: "icon" },
+              { text: "inform7", value: "inform7" },
+              { text: "ini", value: "ini" },
+              { text: "j", value: "j" },
+              { text: "jade", value: "jade" },
+              { text: "java", value: "java" },
+              { text: "JSON", value: "json" },
+              { text: "jsonp", value: "jsonp" },
+              { text: "julia", value: "julia" },
+              { text: "keyman", value: "keyman" },
+              { text: "kotlin", value: "kotlin" },
+              { text: "latex", value: "latex" },
+              { text: "less", value: "less" },
+              { text: "lolcode", value: "lolcode" },
+              { text: "lua", value: "lua" },
+              { text: "makefile", value: "makefile" },
+              { text: "markdown", value: "markdown" },
+              { text: "matlab", value: "matlab" },
+              { text: "mel", value: "mel" },
+              { text: "mizar", value: "mizar" },
+              { text: "monkey", value: "monkey" },
+              { text: "nasm", value: "nasm" },
+              { text: "nginx", value: "nginx" },
+              { text: "nim", value: "nim" },
+              { text: "nix", value: "nix" },
+              { text: "nsis", value: "nsis" },
+              { text: "objectivec", value: "objectivec" },
+              { text: "ocaml", value: "ocaml" },
+              { text: "oz", value: "oz" },
+              { text: "parigp", value: "parigp" },
+              { text: "parser", value: "parser" },
+              { text: "pascal", value: "pascal" },
+              { text: "perl", value: "perl" },
+              { text: "PHP", value: "php" },
+              { text: "processing", value: "processing" },
+              { text: "prolog", value: "prolog" },
+              { text: "protobuf", value: "protobuf" },
+              { text: "puppet", value: "puppet" },
+              { text: "pure", value: "pure" },
+              { text: "python", value: "python" },
+              { text: "q", value: "q" },
+              { text: "qore", value: "qore" },
+              { text: "r", value: "r" },
+              { text: "jsx", value: "jsx" },
+              { text: "rest", value: "rest" },
+              { text: "rip", value: "rip" },
+              { text: "roboconf", value: "roboconf" },
+              { text: "crystal", value: "crystal" },
+              { text: "rust", value: "rust" },
+              { text: "sas", value: "sas" },
+              { text: "sass", value: "sass" },
+              { text: "scss", value: "scss" },
+              { text: "scala", value: "scala" },
+              { text: "scheme", value: "scheme" },
+              { text: "smalltalk", value: "smalltalk" },
+              { text: "smarty", value: "smarty" },
+              { text: "SQL", value: "sql" },
+              { text: "stylus", value: "stylus" },
+              { text: "swift", value: "swift" },
+              { text: "tcl", value: "tcl" },
+              { text: "textile", value: "textile" },
+              { text: "twig", value: "twig" },
+              { text: "TypeScript", value: "typescript" },
+              { text: "verilog", value: "verilog" },
+              { text: "vhdl", value: "vhdl" },
+              { text: "wiki", value: "wiki" },
+              { text: "YAML", value: "yaml" },
+            ],
+            content_style:
+              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+            contextmenu: false,
+          }}
+          onEditorChange={(newValue, editor) => {
+            setValue(newValue);
+          }}
+          value={value}
+        />
+
+        <div style={{ width: "100%" }}>{parse(value, replaceCodeBlock)}</div>
       </main>
 
       <footer className={styles.footer}>
